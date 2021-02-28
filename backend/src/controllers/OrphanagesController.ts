@@ -4,7 +4,7 @@ import Orphanage from "../models/Orphanage";
 import orphanageView from '../views/orphanages-view';
 import * as Yup from 'yup';
 
-export default {
+class OrphanagesController {
   async index(request: Request, response: Response) {
     const orphanagesRepository = getRepository(Orphanage);
     const orphanages = await orphanagesRepository.find({
@@ -12,7 +12,7 @@ export default {
     });
 
     return response.json(orphanageView.renderMany(orphanages));
-  },
+  };
 
   async show(request: Request, response: Response) {
     const { id } = request.params;
@@ -22,7 +22,7 @@ export default {
     });
 
     return response.json(orphanageView.render(orphanage));
-  },
+  };
 
   async create(request: Request, response: Response) {
     const {
@@ -71,7 +71,7 @@ export default {
 
     await schema.validate(data, {
       abortEarly: false,
-    })
+    });
 
     const orphanage = orphanagesRepository.create(data);
   
@@ -80,3 +80,5 @@ export default {
     return response.status(201).json(orphanage);
   }
 }
+
+export default OrphanagesController;
