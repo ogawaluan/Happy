@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
+import * as Yup from 'yup';
+
 import Orphanage from "../models/Orphanage";
 import orphanageView from '../views/orphanages-view';
-import * as Yup from 'yup';
 
 class OrphanagesController {
   async index(request: Request, response: Response) {
