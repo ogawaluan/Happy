@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn} from 'typeorm';
 import Image from './Image';
 
 @Entity('orphanages')
@@ -27,7 +27,7 @@ export default class Orphanage {
   @Column()
   open_on_weekends: boolean;
 
-  @Column()
+  @Column({ default: true })
   is_pending: boolean;
 
   @OneToMany(() => Image, image => image.orphanage, {

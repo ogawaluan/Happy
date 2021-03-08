@@ -28,6 +28,6 @@ routes.post('/forgot', updatePasswordController.sendForgotPasswordEmail);
 routes.get('/orphanages', ensureAuthenticated, orphanagesController.index);
 routes.get('/orphanages/:id', ensureAuthenticated, orphanagesController.show);
 routes.post('/orphanages', ensureAuthenticated, upload.array('images'), orphanagesController.create);
-
+routes.patch('/orphanages/:id', ensureAuthenticated, orphanagesController.update);
 
 export default routes;

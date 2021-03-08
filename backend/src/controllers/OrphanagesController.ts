@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import * as Yup from 'yup';
+import AppError from "../errors/AppError";
 
 import Orphanage from "../models/Orphanage";
 import orphanageView from '../views/orphanages-view';
@@ -13,7 +14,7 @@ class OrphanagesController {
     });
 
     const acceptedOrphanages = orphanages.filter((orphanage) => {
-      return orphanage.is_pending === true;
+      return orphanage.is_pending === false;
     });
 
     return response.json(orphanageView.renderMany(acceptedOrphanages));
@@ -38,7 +39,6 @@ class OrphanagesController {
       instructions,
       opening_hours,
       open_on_weekends,
-      is_pending,
     } = request.body;
   
     const orphanagesRepository = getRepository(Orphanage);
@@ -57,7 +57,6 @@ class OrphanagesController {
       instructions,
       opening_hours,
       open_on_weekends: open_on_weekends === 'true',
-      is_pending: is_pending === 'true',
       images,
     };
 
@@ -69,7 +68,6 @@ class OrphanagesController {
       instructions: Yup.string().required(),
       opening_hours: Yup.string().required(),
       open_on_weekends: Yup.boolean().required(),
-      is_pending: Yup.boolean().required(),
       images: Yup.array(
         Yup.object().shape({
           path: Yup.string().required(),
@@ -86,6 +84,25 @@ class OrphanagesController {
     await orphanagesRepository.save(orphanage);
   
     return response.status(201).json(orphanage);
+  }
+
+  async update(request: Request, response: Response) {
+    const { id } = request.params;
+    const { is_pending } = request.body;
+
+    const orphanage = getRepository(Orphanage);
+
+    const orphanageExist = await orphanage.findOne(id);
+
+    if (!orphanageExist) {
+      throw new AppError('orphanage does not exist.');
+    }
+
+    orphanageExist.is_pending = is_pending;
+
+    await orphanage.save(orphanageExist);
+
+    return response.status(201).json(orphanageExist);
   }
 }
 
